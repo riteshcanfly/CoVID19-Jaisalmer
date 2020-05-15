@@ -12,16 +12,27 @@ library(earlyR)
 library(incidence)
 ```
 ```{r}
-SEIR_Jaisalmer_model <- read.csv("~/codes/Jaisalmer-R0/SEIR_data.csv")
+SEIR_Jaisalmer_model <- read.csv("SEIRdatanew15Mayedit_Ezero.csv")
+keeps_PC = c('Date', 'S' ,'E', 'I', 'R', 'Incidence')
 
-keeps_PC <- c("Date", "S","E","I","R","Incidence" )
-SEIR_Jaisalmer_model1<- SEIR_Jaisalmer_model[keeps_PC]
+head(SEIR_Jaisalmer_model)
+```
+
+
+```{r}
+SEIR_Jaisalmer_model1 = SEIR_Jaisalmer_model[keeps_PC]
 head(SEIR_Jaisalmer_model1)
+
 ```
 ```{r}
+SEIR_Jaisalmer_model1$Date
+```
+
+
+```{r}
 sir_start_date <- "27-03-2020"
-SEIR_Jaisalmer_model1$Date <- as.Date(SEIR_Jaisalmer_model1$Date, "%d/%m/%Y")
-today <- as.Date("2020-05-06")
+SEIR_Jaisalmer_model1$Date <- as.Date(SEIR_Jaisalmer_model1$Date, "%d-%m-%y")
+today <- as.Date("12-05-2020")
 
 Infected <- as.incidence(SEIR_Jaisalmer_model1$Incidence, SEIR_Jaisalmer_model1$Date, last_date =today)
 plot(Infected)
@@ -31,34 +42,86 @@ plot(Infected)
 ```{r}
 Infected
 ```
+```{r}
+# divide the data into 2 parts
+# 1. till "2020-04-01"
+# 2. After "2020-04-01"
+data1 = SEIR_Jaisalmer_model1[SEIR_Jaisalmer_model1$Date >= "2020-03-13" & SEIR_Jaisalmer_model1$Date <= "2020-04-01",]
+head(data1)
+
+data2 = SEIR_Jaisalmer_model1[SEIR_Jaisalmer_model1$Date > "2020-04-01" & SEIR_Jaisalmer_model1$Date <= "2020-05-12",]
+head(data2)
+
+```
 
 
 ```{r}
-mu <- 7.5 # mean in days days
-sigma <- 3.5 # standard deviation in days
+mu <- 7.5 # mean in days
+sigma <- 3.4 # standard deviation in days
+```
+
+
+```{r}
+today <- as.Date("2020-04-01")
+
+Infected1 <- as.incidence(data1$Incidence, data1$Date, last_date =today)
+plot(Infected1)
+```
+
+
+```{r}
+today <- as.Date("2020-05-12")
+
+Infected2 <- as.incidence(data2$Incidence, data2$Date, last_date =today)
+plot(Infected2)
 ```
 ```{r}
 library(earlyR)
 
-res <- get_R(Infected, si_mean = mu, si_sd = sigma)
-res
+res1 <- get_R(Infected1, si_mean = mu, si_sd = sigma)
+res1
+```
 
+
+```{r}
+res2 <- get_R(Infected2, si_mean = mu, si_sd = sigma)
+res2
 ```
 ```{r}
-plot(res)
+plot(res1)
+```
 
+
+```{r}
+plot(res2)
 ```
 ```{r}
-R_val <- sample_R(res, 1000)
-summary(R_val) # basic stats
+R_val1 <- sample_R(res1, 1000)
+summary(R_val1) # basic stats
+```
+
+
+```{r}
+R_val2 <- sample_R(res2, 1000)
+summary(R_val2) # basic stats
 ```
 ```{r}
-today <- as.Date("2020-04-28")
+today <- as.Date("2020-04-13")
 
-plot(res, "lambdas", scale = length(SEIR_Jaisalmer_model1$Date) + 1)
-abline(v = SEIR_Jaisalmer_model1$Date, lwd = 0.1, col = "grey")
+plot(res1, "lambdas", scale = length(data1$Date) + 1)
+abline(v = data1$Date, lwd = 0.1, col = "grey")
 abline(v = today, col = "blue", lty = 2, lwd = 2)
-#points(SEIR_Jaisalmer_model1$Date, seq_along(SEIR_Jaisalmer_model1$Date), pch = 10, cex = 1)
+#points(data1$Date, seq_along(data1$Date), pch = 10, cex = 1)
+```
+
+
+```{r}
+today <- as.Date("2020-04-20")
+
+plot(res2, "lambdas", scale = length(data2$Date) + 1)
+abline(v = data2$Date, lwd = 0.1, col = "grey")
+abline(v = today, col = "blue", lty = 2, lwd = 2)
+#points(data2$Date, seq_along(data2$Date), pch = 10, cex = 1)
 ```
 
 
