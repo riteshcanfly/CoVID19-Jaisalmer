@@ -8,7 +8,7 @@ This produces a maximum likelihood estimation of R0. The R0 value obtained is 0.
 
 The Python file introduces SEIR model with parameter estimation
 The obtained values are:
-* Beta = 8.55686505159+- 
+* Beta = 8.55686505159 
 * Gamma = 2.95899586883 
 * Delta = 0.280502068839
 
