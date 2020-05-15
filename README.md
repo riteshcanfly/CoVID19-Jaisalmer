@@ -2,7 +2,7 @@
 This is the data analysis software for Jaisalmer camp 
 
 This is the data from Jaisalmer centre. 
-There are two notebooks (R and Python) both HTML files are also there.
+There are two notebooks for R and Python separately, both the HTML files are also there.
 The Rfile uses the 'earlyR' package for getting R0 value with mu = 7.5 and sigma = 3.5
 This produces a maximum likelihood estimation of R0. The R0 value obtained is 0.98 from here.
 
