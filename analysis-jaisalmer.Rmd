@@ -1,0 +1,69 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library(earlyR)
+library(incidence)
+```
+```{r}
+SEIR_Jaisalmer_model <- read.csv("~/codes/Jaisalmer-R0/SEIR_data.csv")
+
+keeps_PC <- c("Date", "S","E","I","R","Incidence" )
+SEIR_Jaisalmer_model1<- SEIR_Jaisalmer_model[keeps_PC]
+head(SEIR_Jaisalmer_model1)
+```
+```{r}
+sir_start_date <- "27-03-2020"
+SEIR_Jaisalmer_model1$Date <- as.Date(SEIR_Jaisalmer_model1$Date, "%d/%m/%Y")
+today <- as.Date("2020-05-06")
+
+Infected <- as.incidence(SEIR_Jaisalmer_model1$Incidence, SEIR_Jaisalmer_model1$Date, last_date =today)
+plot(Infected)
+#all.equal(Infected,SEIR_Jaisalmer_model )
+
+```
+```{r}
+Infected
+```
+
+
+```{r}
+mu <- 7.5 # mean in days days
+sigma <- 3.5 # standard deviation in days
+```
+```{r}
+library(earlyR)
+
+res <- get_R(Infected, si_mean = mu, si_sd = sigma)
+res
+
+```
+```{r}
+plot(res)
+
+```
+```{r}
+R_val <- sample_R(res, 1000)
+summary(R_val) # basic stats
+```
+```{r}
+today <- as.Date("2020-04-28")
+
+plot(res, "lambdas", scale = length(SEIR_Jaisalmer_model1$Date) + 1)
+abline(v = SEIR_Jaisalmer_model1$Date, lwd = 0.1, col = "grey")
+abline(v = today, col = "blue", lty = 2, lwd = 2)
+#points(SEIR_Jaisalmer_model1$Date, seq_along(SEIR_Jaisalmer_model1$Date), pch = 10, cex = 1)
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
